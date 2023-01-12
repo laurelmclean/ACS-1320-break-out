@@ -32,12 +32,14 @@
         let dx = 2;
         let dy = -2;
 
+        //check if ball is touching
+        const ballRadius = 10;
 
 
         //The draw() function will be executed within setInterval every 10 milliseconds
         function drawBall() {
             ctx.beginPath();
-            ctx.arc(x, y, 10, 0, Math.PI * 2);
+            ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
             ctx.fillStyle = "#0095DD";
             ctx.fill();
             ctx.closePath();
@@ -50,9 +52,23 @@
             //add a small value to x and y after every frame has been drawn to make it appear that the ball is moving
             x += dx;
             y += dy;
+            //if ball is touching top, reverse it
+            //If the ball was moving upwards with a speed of 2 pixels per frame, now it will be moving "up" with a speed of -2 pixels, which actually equals to moving down at a speed of 2 pixels per frame.
+            //or if ball touching bottom reverse it
+
+            if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+                dy = -dy;
+            }
+
+            //touching left or right
+            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
             }
 
         setInterval(draw, 10);
+        
+        
 
     </script>
 </body>
