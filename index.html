@@ -71,12 +71,22 @@
             //add a small value to x and y after every frame has been drawn to make it appear that the ball is moving
             x += dx;
             y += dy;
+
             //if ball is touching top, reverse it
             //If the ball was moving upwards with a speed of 2 pixels per frame, now it will be moving "up" with a speed of -2 pixels, which actually equals to moving down at a speed of 2 pixels per frame.
+            //else if ball touches bottom it will end game
             //or if ball touching bottom reverse it
-
-            if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+            if (y + dy < ballRadius) {
                 dy = -dy;
+            } else if (y + dy > canvas.height - ballRadius) {
+                //detect collision between ball and paddle
+                if (x > paddleX && x < paddleX + paddleWidth) {
+                    dy = -dy;
+                } else {
+                    alert("GAME OVER");
+                    document.location.reload();
+                    clearInterval(interval);
+                }
             }
 
             //touching left or right
@@ -117,7 +127,7 @@
         }
 
 
-        setInterval(draw, 10);
+        const interval = setInterval(draw, 10);
         
         
 
