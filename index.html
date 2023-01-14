@@ -75,6 +75,41 @@
         //score variables
         let score = 0;
 
+        //event listeners to listen for pressed keys
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+        //event listener for mouse
+        document.addEventListener("mousemove", mouseMoveHandler, false);
+
+        //update the paddle position based on the pointer coordinates
+        function mouseMoveHandler(e) {
+            //restricting the movement to the size of the Canvas
+            //need to update so paddle wont disappear off left side
+            const relativeX = e.clientX - canvas.offsetLeft;
+            if (relativeX > 0 && relativeX < canvas.width) {
+                paddleX = relativeX - paddleWidth;
+            }
+        }
+
+        //when pressed
+        //browsers use arrowright or right
+        function keyDownHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") {
+                rightPressed = true;
+            } else if (e.key === "Left" || e.key === "ArrowLeft") {
+                leftPressed = true;
+            }
+        }
+
+        //when stopped being pressed
+        function keyUpHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") {
+                rightPressed = false;
+            } else if (e.key === "Left" || e.key === "ArrowLeft") {
+                leftPressed = false;
+            }
+        }
+
         //brick drawing logic
         function drawBricks() {
             for (let c = 0; c < brickColumnCount; c++) {
@@ -202,28 +237,7 @@
             }
 
         }
-        //event listeners to listen for pressed keys
-        document.addEventListener("keydown", keyDownHandler, false);
-        document.addEventListener("keyup", keyUpHandler, false);
-
-        //when pressed
-        //browsers use arrowright or right
-        function keyDownHandler(e) {
-            if (e.key === "Right" || e.key === "ArrowRight") {
-                rightPressed = true;
-            } else if (e.key === "Left" || e.key === "ArrowLeft") {
-                leftPressed = true;
-            }
-        }
-
-        //when stopped being pressed
-        function keyUpHandler(e) {
-            if (e.key === "Right" || e.key === "ArrowRight") {
-                rightPressed = false;
-            } else if (e.key === "Left" || e.key === "ArrowLeft") {
-                leftPressed = false;
-            }
-        }
+ 
 
         const interval = setInterval(draw, 10);
 
