@@ -65,32 +65,61 @@
         //array containing columns, rows, and x and y position
         //code will loop through and create new bricks
         const bricks = [];
-            for (let c = 0; c < brickColumnCount; c++) {
-                bricks[c] = [];
-                for (let r = 0; r < brickRowCount; r++) {
-                    bricks[c][r] = { x: 0, y: 0 };
-                }
+        for (let c = 0; c < brickColumnCount; c++) {
+            bricks[c] = [];
+            for (let r = 0; r < brickRowCount; r++) {
+                bricks[c][r] = { x: 0, y: 0, status: 1 };
             }
+        }
 
 
         //brick drawing logic
         function drawBricks() {
             for (let c = 0; c < brickColumnCount; c++) {
                 for (let r = 0; r < brickRowCount; r++) {
-                    //calculations that will work out the x and y position of each brick for each loop iteration
-        //brickX position is worked out as brickWidth + brickPadding, multiplied by the column number, c, plus the brickOffsetLeft
-                    const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-                    const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-                    bricks[c][r].x = brickX;
-                    bricks[c][r].y = brickY;
-                    ctx.beginPath();
-                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                    ctx.fillStyle = "#0095DD";
-                    ctx.fill();
-                    ctx.closePath();
+                    if (bricks[c][r].status === 1) {
+                        //calculations that will work out the x and y position of each brick for each loop iteration
+                        //brickX position is worked out as brickWidth + brickPadding, multiplied by the column number, c, plus the brickOffsetLeft
+                        const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+                        const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+                        ctx.beginPath();
+                        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                        ctx.fillStyle = "#0095DD";
+                        ctx.fill();
+                        ctx.closePath();
+                    }
                 }
             }
         }
+
+        //collision detecting between ball and bricks
+        //loop through all the bricks and compare every single brick's position with the ball's coordinates as each frame is drawn
+        function collisionDetection() {
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    const b = bricks[c][r];
+                    //if the brick is active (its status is 1) we will check whether the collision happens; 
+                    //if a collision does occur we'll set the status of the given brick to 0 so it won't be painted on the screen
+                    if (b.status === 1) {
+                        //if these conditions are met, reverse direction of ball
+                        if (
+                            x > b.x &&
+                            x < b.x + brickWidth &&
+                            y > b.y &&
+                            y < b.y + brickHeight
+                        ) {
+                            dy = -dy;
+                            b.status = 0;
+                            //STRETCH CHALLENGE - ball changes color when hits brick
+                            color = randColor();
+                        }
+                    }
+                }
+            }
+        }
+
 
         //The draw() function will be executed within setInterval every 10 milliseconds
         function drawBall() {
@@ -99,7 +128,7 @@
             ctx.fillStyle = color;
             ctx.fill();
             ctx.closePath();
-            }
+        }
 
         function drawPaddle() {
             ctx.beginPath();
@@ -115,6 +144,7 @@
             drawBricks();
             drawBall();
             drawPaddle();
+            collisionDetection();
             //add a small value to x and y after every frame has been drawn to make it appear that the ball is moving
             x += dx;
             y += dy;
@@ -147,7 +177,7 @@
 
             //paddle moving logic
             //can move paddle only within boundaries of canvas
-           if (rightPressed) {
+            if (rightPressed) {
                 paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
             } else if (leftPressed) {
                 paddleX = Math.max(paddleX - 7, 0);
@@ -157,7 +187,7 @@
         //event listeners to listen for pressed keys
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
-        
+
         //when pressed
         //browsers use arrowright or right
         function keyDownHandler(e) {
@@ -178,7 +208,7 @@
         }
 
         const interval = setInterval(draw, 10);
-        
+
 
     </script>
 </body>
