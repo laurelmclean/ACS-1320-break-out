@@ -72,6 +72,8 @@
             }
         }
 
+        //score variables
+        let score = 0;
 
         //brick drawing logic
         function drawBricks() {
@@ -114,12 +116,27 @@
                             b.status = 0;
                             //STRETCH CHALLENGE - ball changes color when hits brick
                             color = randColor();
+                            //increase score every time a collision occurs
+                            score++;
+                            //if all bricks have been destroyed display winning message
+                            if (score === brickRowCount * brickColumnCount) {
+                                alert("YOU WIN, CONGRATULATIONS!");
+                                document.location.reload();
+                                clearInterval(interval); // Needed for Chrome to end game
+                            }
                         }
                     }
                 }
             }
         }
 
+        //function to create an update score display
+        function drawScore() {
+                ctx.font = "16px Arial";
+                ctx.fillStyle = "#0095DD";
+                //first param is text, and then coordinates
+                ctx.fillText(`Score: ${score}`, 8, 20);
+            }
 
         //The draw() function will be executed within setInterval every 10 milliseconds
         function drawBall() {
@@ -144,6 +161,7 @@
             drawBricks();
             drawBall();
             drawPaddle();
+            drawScore();
             collisionDetection();
             //add a small value to x and y after every frame has been drawn to make it appear that the ball is moving
             x += dx;
