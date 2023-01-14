@@ -31,6 +31,7 @@
         let y = canvas.height - 30;
         let dx = 2;
         let dy = -2;
+        let color = '#0095DD';
 
         //define ball radius to check if ball is touching wall
         const ballRadius = 10;
@@ -45,12 +46,18 @@
         let rightPressed = false;
         let leftPressed = false;
 
+        //STRETCH CHALLENGE
+        //change ball to random colour every time it bounces off wall
+        function randColor() {
+            return ('#' + (Math.floor(Math.random() * 0x1000000) + 0x1000000).toString(16).substring(1)
+            );
+        }
 
         //The draw() function will be executed within setInterval every 10 milliseconds
         function drawBall() {
             ctx.beginPath();
             ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#0095DD";
+            ctx.fillStyle = color;
             ctx.fill();
             ctx.closePath();
             }
@@ -78,10 +85,14 @@
             //or if ball touching bottom reverse it
             if (y + dy < ballRadius) {
                 dy = -dy;
+                //update colour when collision with wall
+                color = randColor();
             } else if (y + dy > canvas.height - ballRadius) {
                 //detect collision between ball and paddle
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
+                    //update colour when collision with wall
+                    color = randColor();
                 } else {
                     alert("GAME OVER");
                     document.location.reload();
@@ -126,9 +137,7 @@
             }
         }
 
-
         const interval = setInterval(draw, 10);
-        
         
 
     </script>
