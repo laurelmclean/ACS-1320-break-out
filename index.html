@@ -75,6 +75,9 @@
         //score variables
         let score = 0;
 
+        //give player lives
+        let lives = 3;
+
         //event listeners to listen for pressed keys
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
@@ -167,11 +170,19 @@
 
         //function to create an update score display
         function drawScore() {
-                ctx.font = "16px Arial";
-                ctx.fillStyle = "#0095DD";
-                //first param is text, and then coordinates
-                ctx.fillText(`Score: ${score}`, 8, 20);
-            }
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#0095DD";
+            //first param is text, and then coordinates
+            ctx.fillText(`Score: ${score}`, 8, 20);
+        }
+
+        //draw lives
+        function drawLives() {
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#0095DD";
+            ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+        }
+
 
         //The draw() function will be executed within setInterval every 10 milliseconds
         function drawBall() {
@@ -197,6 +208,7 @@
             drawBall();
             drawPaddle();
             drawScore();
+            drawLives();
             collisionDetection();
             //add a small value to x and y after every frame has been drawn to make it appear that the ball is moving
             x += dx;
@@ -217,9 +229,21 @@
                     //update colour when collision with wall
                     color = randColor();
                 } else {
-                    alert("GAME OVER");
-                    document.location.reload();
-                    clearInterval(interval);
+                    lives--;
+                    //if no lives, end game
+                    if (!lives) {
+                        alert("GAME OVER");
+                        document.location.reload();
+                        clearInterval(interval); // Needed for Chrome to end game
+                    } else {
+                        //if there are still some lives left, then the position of the ball and the paddle are reset, along with the movement of the ball.
+                        x = canvas.width / 2;
+                        y = canvas.height - 30;
+                        dx = 2;
+                        dy = -2;
+                        paddleX = (canvas.width - paddleWidth) / 2;
+                    }
+
                 }
             }
 
@@ -237,10 +261,9 @@
             }
 
         }
- 
-
+        
+        //look into request animation frame loop?
         const interval = setInterval(draw, 10);
-
 
     </script>
 </body>
