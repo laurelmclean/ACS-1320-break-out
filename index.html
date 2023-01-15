@@ -90,7 +90,7 @@
             //need to update so paddle wont disappear off left side
             const relativeX = e.clientX - canvas.offsetLeft;
             if (relativeX > 0 && relativeX < canvas.width) {
-                paddleX = relativeX - paddleWidth;
+                paddleX = relativeX - paddleWidth / 2;
             }
         }
 
@@ -217,10 +217,12 @@
             drawScore();
             drawLives();
             collisionDetection();
-            //add a small value to x and y after every frame has been drawn to make it appear that the ball is moving
-            x += dx;
-            y += dy;
-
+            //touching left or right
+            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+                //random colour if ball touches left or right
+                color = randColor();
+            }
             //if ball is touching top, reverse it
             //If the ball was moving upwards with a speed of 2 pixels per frame, now it will be moving "up" with a speed of -2 pixels, which actually equals to moving down at a speed of 2 pixels per frame.
             //else if ball touches bottom it will end game
@@ -229,48 +231,46 @@
                 dy = -dy;
                 //update colour when collision with wall
                 color = randColor();
-            } else if (y + dy > canvas.height - ballRadius) {
+            }
+            else if (y + dy > canvas.height - ballRadius) {
                 //detect collision between ball and paddle
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
                     //update colour when collision with wall
                     color = randColor();
-                } else {
+                }
+                else {
                     lives--;
                     //if no lives, end game
                     if (!lives) {
-                        alert("GAME OVER! YOU LOSE!");
+                        alert("GAME OVER");
                         document.location.reload();
-                        clearInterval(interval); // Needed for Chrome to end game
-                    } else {
+                    }
+                    else {
                         //if there are still some lives left, then the position of the ball and the paddle are reset, along with the movement of the ball.
                         x = canvas.width / 2;
                         y = canvas.height - 30;
-                        dx = 2;
-                        dy = -2;
+                        dx = 3;
+                        dy = -3;
                         paddleX = (canvas.width - paddleWidth) / 2;
                     }
-
                 }
             }
-
-            //touching left or right
-            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-                dx = -dx;
-            }
-
             //paddle moving logic
             //can move paddle only within boundaries of canvas
-            if (rightPressed) {
-                paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
-            } else if (leftPressed) {
-                paddleX = Math.max(paddleX - 7, 0);
+            if (rightPressed && paddleX < canvas.width - paddleWidth) {
+                paddleX += 7;
             }
-
+            else if (leftPressed && paddleX > 0) {
+                paddleX -= 7;
+            }
+            //add a small value to x and y after every frame has been drawn to make it appear that the ball is moving
+            x += dx;
+            y += dy;
+            requestAnimationFrame(draw);
         }
-        
-        //look into request animation frame loop?
-        const interval = setInterval(draw, 10);
+
+        draw();
 
     </script>
 </body>
