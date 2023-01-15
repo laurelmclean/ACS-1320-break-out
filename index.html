@@ -31,7 +31,7 @@
         let y = canvas.height - 30;
         let dx = 2;
         let dy = -2;
-        let color = '#0095DD';
+        let color = '#51a094';
 
         //STRETCH CHALLENGE
         //change ball to random colour every time it bounces off wall
@@ -126,7 +126,14 @@
                         bricks[c][r].y = brickY;
                         ctx.beginPath();
                         ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                        ctx.fillStyle = "#0095DD";
+                        //Stretch challenge - rows are different colours
+                        let brickRowColor = '#133337'
+                        if (r == 1) {
+                            brickRowColor = '#0e2f44'
+                        } else if (r == 2) {
+                            brickRowColor = '#2a6f64'
+                        }
+                        ctx.fillStyle = brickRowColor;
                         ctx.fill();
                         ctx.closePath();
                     }
@@ -158,7 +165,7 @@
                             score++;
                             //if all bricks have been destroyed display winning message
                             if (score === brickRowCount * brickColumnCount) {
-                                alert("YOU WIN, CONGRATULATIONS!");
+                                alert("YOU WIN! CONGRATULATIONS!");
                                 document.location.reload();
                                 clearInterval(interval); // Needed for Chrome to end game
                             }
@@ -171,7 +178,7 @@
         //function to create an update score display
         function drawScore() {
             ctx.font = "16px Arial";
-            ctx.fillStyle = "#0095DD";
+            ctx.fillStyle = "#51a094";
             //first param is text, and then coordinates
             ctx.fillText(`Score: ${score}`, 8, 20);
         }
@@ -179,7 +186,7 @@
         //draw lives
         function drawLives() {
             ctx.font = "16px Arial";
-            ctx.fillStyle = "#0095DD";
+            ctx.fillStyle = "#51a094";
             ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
         }
 
@@ -196,7 +203,7 @@
         function drawPaddle() {
             ctx.beginPath();
             ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-            ctx.fillStyle = "#0095DD";
+            ctx.fillStyle = "#51a094";
             ctx.fill();
             ctx.closePath();
         }
@@ -232,7 +239,7 @@
                     lives--;
                     //if no lives, end game
                     if (!lives) {
-                        alert("GAME OVER");
+                        alert("GAME OVER! YOU LOSE!");
                         document.location.reload();
                         clearInterval(interval); // Needed for Chrome to end game
                     } else {
