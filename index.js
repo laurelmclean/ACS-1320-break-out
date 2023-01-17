@@ -55,10 +55,10 @@ let score = 0;
 let lives = 3;
 
 // update the paddle position based on the pointer coordinates
-function mouseMoveHandler(e) {
+function mouseMoveHandler({ clientX }) {
   // restricting the movement to the size of the Canvas
   // need to update so paddle wont disappear off left side
-  const relativeX = e.clientX - canvas.offsetLeft;
+  const relativeX = clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
     paddleX = relativeX - paddleWidth / 2;
   }
@@ -66,28 +66,29 @@ function mouseMoveHandler(e) {
 
 // when pressed
 // browsers use arrowright or right
-function keyDownHandler(e) {
-  if (e.key === 'Right' || e.key === 'ArrowRight') {
+function keyDownHandler({ key }) {
+  if (key === 'Right' || key === 'ArrowRight') {
     rightPressed = true;
-  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+  } else if (key === 'Left' || key === 'ArrowLeft') {
     leftPressed = true;
   }
 }
 
 // when stopped being pressed
-function keyUpHandler(e) {
-  if (e.key === 'Right' || e.key === 'ArrowRight') {
+function keyUpHandler({ key }) {
+  if (key === 'Right' || key === 'ArrowRight') {
     rightPressed = false;
-  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+  } else if (key === 'Left' || key === 'ArrowLeft') {
     leftPressed = false;
   }
 }
 
+const { addEventListener } = document;
 // event listeners to listen for pressed keys
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
+addEventListener('keydown', keyDownHandler, false);
+addEventListener('keyup', keyUpHandler, false);
 // event listener for mouse
-document.addEventListener('mousemove', mouseMoveHandler, false);
+addEventListener('mousemove', mouseMoveHandler, false);
 
 // brick drawing logic
 function drawBricks() {
@@ -125,16 +126,17 @@ function collisionDetection() {
   for (let c = 0; c < brickColumnCount; c += 1) {
     for (let r = 0; r < brickRowCount; r += 1) {
       const b = bricks[c][r];
+      const { x: brickX, y: brickY, status } = b;
       // if the brick is active (its status is 1) we will check whether the collision happens;
       // if a collision does occur we'll set the status of the given brick to 0
       // so it won't be painted on the screen
-      if (b.status === 1) {
+      if (status === 1) {
         // if these conditions are met, reverse direction of ball
         if (
-          x > b.x
-                            && x < b.x + brickWidth
-                            && y > b.y
-                            && y < b.y + brickHeight
+          x > brickX
+          && x < brickX + brickWidth
+          && y > brickY
+          && y < brickY + brickHeight
         ) {
           dy = -dy;
           b.status = 0;
