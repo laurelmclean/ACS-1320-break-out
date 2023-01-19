@@ -1,3 +1,5 @@
+import Ball from './Ball.js';
+
 // reference canvas element in js
 const canvas = document.getElementById('myCanvas');
 // ctx variable to store the 2D rendering context
@@ -172,13 +174,15 @@ function drawLives() {
 }
 
 // The draw() function will be executed within setInterval every 10 milliseconds
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = color;
-  ctx.fill();
-  ctx.closePath();
-}
+// function drawBall() {
+//   ctx.beginPath();
+//   ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+//   ctx.fillStyle = color;
+//   ctx.fill();
+//   ctx.closePath();
+// }
+
+let ball = new Ball(x, y);
 
 function drawPaddle() {
   ctx.beginPath();
@@ -192,7 +196,8 @@ function draw() {
   // removes previous shape after each frame
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
-  drawBall();
+  ball.render(ctx);
+  ball.move();
   drawPaddle();
   drawScore();
   drawLives();
