@@ -1,4 +1,5 @@
 import Ball from './Ball.js';
+import Brick from './Brick.js';
 
 // reference canvas element in js
 const canvas = document.getElementById('myCanvas');
@@ -104,18 +105,8 @@ function drawBricks() {
         const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
-        ctx.beginPath();
-        ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        // Stretch challenge - rows are different colours
-        let brickRowColor = '#133337';
-        if (r === 1) {
-          brickRowColor = '#0e2f44';
-        } else if (r === 2) {
-          brickRowColor = '#2a6f64';
-        }
-        ctx.fillStyle = brickRowColor;
-        ctx.fill();
-        ctx.closePath();
+        const brick = new Brick(brickX, brickY);
+        brick.render(ctx);
       }
     }
   }
