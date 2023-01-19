@@ -1,5 +1,6 @@
 import Ball from './Ball.js';
 import Brick from './Brick.js';
+import Paddle from './Paddle.js';
 
 // reference canvas element in js
 const canvas = document.getElementById('myCanvas');
@@ -173,15 +174,16 @@ function drawLives() {
 //   ctx.closePath();
 // }
 
-let ball = new Ball(x, y);
+const ball = new Ball(x, y);
+const paddle = new Paddle(paddleX, canvas.height - 10);
 
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = '#51a094';
-  ctx.fill();
-  ctx.closePath();
-}
+// function drawPaddle() {
+//   ctx.beginPath();
+//   ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+//   ctx.fillStyle = '#51a094';
+//   ctx.fill();
+//   ctx.closePath();
+// }
 
 function draw() {
   // removes previous shape after each frame
@@ -189,7 +191,7 @@ function draw() {
   drawBricks();
   ball.render(ctx);
   ball.move();
-  drawPaddle();
+  paddle.render(ctx);
   drawScore();
   drawLives();
   collisionDetection();
