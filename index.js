@@ -2,24 +2,16 @@ import Ball from './Ball.js';
 import Brick from './Brick.js';
 import Bricks from './Bricks.js';
 import Paddle from './Paddle.js';
+import Text from './Text.js';
 
 // reference canvas element in js
 const canvas = document.getElementById('myCanvas');
 // ctx variable to store the 2D rendering context
 const ctx = canvas.getContext('2d');
 
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
+const x = canvas.width / 2;
+const y = canvas.height - 30;
 let color = '#51a094';
-
-// STRETCH CHALLENGE
-// change ball to random colour every time it bounces off wall
-function randColor() {
-  return (`#${(Math.floor(Math.random() * 0x1000000) + 0x1000000).toString(16).substring(1)}`
-  );
-}
 
 // define ball radius to check if ball is touching wall
 const ballRadius = 10;
@@ -54,10 +46,10 @@ for (let c = 0; c < brickColumnCount; c += 1) {
 }
 
 // score variables
-let score = 0;
+const score = 0;
 
 // give player lives
-let lives = 3;
+const lives = 3;
 
 // update the paddle position based on the pointer coordinates
 function mouseMoveHandler({ clientX }) {
@@ -146,11 +138,11 @@ function collisionDetection() {
           ball.dy = -ball.dy;
           b.status = 0;
           // STRETCH CHALLENGE - ball changes color when hits brick
-          color = randColor();
+          ball.randColor();
           // increase score every time a collision occurs
-          score += 1;
+          scoreText.value += 1;
           // if all bricks have been destroyed display winning message
-          if (score === brickRowCount * brickColumnCount) {
+          if (scoreText.value === brickRowCount * brickColumnCount) {
             // eslint-disable-next-line no-alert
             alert('YOU WIN! CONGRATULATIONS!');
             document.location.reload();
@@ -161,23 +153,10 @@ function collisionDetection() {
   }
 }
 
-// function to create an update score display
-function drawScore() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#51a094';
-  // first param is text, and then coordinates
-  ctx.fillText(`Score: ${score}`, 8, 20);
-}
-
-// draw lives
-function drawLives() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#51a094';
-  ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-}
-
-const ball = new Ball(x, y);
+const ball = new Ball(color, x, y);
 const paddle = new Paddle(paddleX, canvas.height - 10);
+const scoreText = new Text(8, 20, color, score, 'Score: ');
+const livesText = new Text(canvas.width - 65, 20, color, lives, 'Lives: ');
 
 function draw() {
   // removes previous shape after each frame
@@ -186,14 +165,14 @@ function draw() {
   ball.render(ctx);
   ball.move();
   paddle.render(ctx);
-  drawScore();
-  drawLives();
+  scoreText.render(ctx);
+  livesText.render(ctx);
   collisionDetection();
   // touching left or right
   if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
     ball.dx = -ball.dx;
     // random colour if ball touches left or right
-    color = randColor();
+    ball.randColor();
   }
   // if ball is touching top, reverse it
   // If the ball was moving upwards with a speed of 2 pixels per frame,
@@ -204,17 +183,17 @@ function draw() {
   if (ball.y + ball.dy < ballRadius) {
     ball.dy = -ball.dy;
     // update colour when collision with wall
-    color = randColor();
+    ball.randColor();
   } else if (ball.y + ball.dy > canvas.height - ballRadius) {
     // detect collision between ball and paddle
-    if (ball.x > paddle.x && x < paddle.x + paddleWidth) {
+    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
       ball.dy = -ball.dy;
       // update colour when collision with wall
-      color = randColor();
+      ball.randColor();
     } else {
-      lives -= 1;
+      livesText.value -= 1;
       // if no lives, end game
-      if (!lives) {
+      if (!livesText.value) {
         // eslint-disable-next-line no-alert
         alert('GAME OVER');
         document.location.reload();
@@ -230,10 +209,6 @@ function draw() {
     }
   }
   movePaddle();
-  // add a small value to x and y after every frame has been drawn to make it appear
-  // that the ball is moving
-//   x += dx;
-//   y += dy;
   requestAnimationFrame(draw);
 }
 

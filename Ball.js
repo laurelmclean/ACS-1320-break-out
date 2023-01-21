@@ -1,8 +1,9 @@
 import Sprite from './Sprite.js';
 
 class Ball extends Sprite {
-  constructor(x = 0, y = 0, radius = 10, color = '#0095DD') {
+  constructor(color, x = 0, y = 0, radius = 10) {
     super(x, y, 0, 0, color);
+    this.color = color;
     this.radius = radius;
     this.dx = 2;
     this.dy = -2;
@@ -11,6 +12,12 @@ class Ball extends Sprite {
   move() {
     this.x += this.dx;
     this.y += this.dy;
+  }
+
+  // STRETCH CHALLENGE
+  // change ball to random colour every time it bounces off wall
+  randColor() {
+    this.color = `#${(Math.floor(Math.random() * 0x1000000) + 0x1000000).toString(16).substring(1)}`;
   }
 
   render(ctx) { // Overrides the existing render method!
