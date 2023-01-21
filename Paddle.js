@@ -5,6 +5,14 @@ class Paddle extends Sprite {
     super(x, y, width, height, color);
   }
 
+  move(dx) {
+    this.x += dx;
+  }
+
+  mouseMove(x) {
+    this.x = x;
+  }
+
   render(ctx) {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);

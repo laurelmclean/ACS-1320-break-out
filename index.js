@@ -1,5 +1,6 @@
 import Ball from './Ball.js';
 import Brick from './Brick.js';
+import Bricks from './Bricks.js';
 import Paddle from './Paddle.js';
 
 // reference canvas element in js
@@ -64,7 +65,7 @@ function mouseMoveHandler({ clientX }) {
   // need to update so paddle wont disappear off left side
   const relativeX = clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
+    paddle.mouseMove(relativeX - paddleWidth / 2);
   }
 }
 
@@ -113,6 +114,16 @@ function drawBricks() {
   }
 }
 
+// paddle moving logic
+function movePaddle() {
+  // can move paddle only within boundaries of canvas
+  if (rightPressed && paddle.x < canvas.width - paddleWidth) {
+    paddle.move(7);
+  } else if (leftPressed && paddle.x > 0) {
+    paddle.move(-7);
+  }
+}
+
 // collision detecting between ball and bricks
 // loop through all the bricks and compare every single brick's position
 // with the ball's coordinates as each frame is drawn
@@ -127,12 +138,12 @@ function collisionDetection() {
       if (status === 1) {
         // if these conditions are met, reverse direction of ball
         if (
-          x > brickX
-          && x < brickX + brickWidth
-          && y > brickY
-          && y < brickY + brickHeight
+          ball.x > brickX
+          && ball.x < brickX + brickWidth
+          && ball.y > brickY
+          && ball.y < brickY + brickHeight
         ) {
-          dy = -dy;
+          ball.dy = -ball.dy;
           b.status = 0;
           // STRETCH CHALLENGE - ball changes color when hits brick
           color = randColor();
@@ -165,25 +176,8 @@ function drawLives() {
   ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
 }
 
-// The draw() function will be executed within setInterval every 10 milliseconds
-// function drawBall() {
-//   ctx.beginPath();
-//   ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-//   ctx.fillStyle = color;
-//   ctx.fill();
-//   ctx.closePath();
-// }
-
 const ball = new Ball(x, y);
 const paddle = new Paddle(paddleX, canvas.height - 10);
-
-// function drawPaddle() {
-//   ctx.beginPath();
-//   ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-//   ctx.fillStyle = '#51a094';
-//   ctx.fill();
-//   ctx.closePath();
-// }
 
 function draw() {
   // removes previous shape after each frame
@@ -196,8 +190,8 @@ function draw() {
   drawLives();
   collisionDetection();
   // touching left or right
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
+  if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
+    ball.dx = -ball.dx;
     // random colour if ball touches left or right
     color = randColor();
   }
@@ -207,14 +201,14 @@ function draw() {
   // which actually equals to moving down at a speed of 2 pixels per frame.
   // else if ball touches bottom it will end game
   // or if ball touching bottom reverse it
-  if (y + dy < ballRadius) {
-    dy = -dy;
+  if (ball.y + ball.dy < ballRadius) {
+    ball.dy = -ball.dy;
     // update colour when collision with wall
     color = randColor();
-  } else if (y + dy > canvas.height - ballRadius) {
+  } else if (ball.y + ball.dy > canvas.height - ballRadius) {
     // detect collision between ball and paddle
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      dy = -dy;
+    if (ball.x > paddle.x && x < paddle.x + paddleWidth) {
+      ball.dy = -ball.dy;
       // update colour when collision with wall
       color = randColor();
     } else {
@@ -227,25 +221,19 @@ function draw() {
       } else {
         // if there are still some lives left then the position of the ball and the paddle are reset
         // along with the movement of the ball.
-        x = canvas.width / 2;
-        y = canvas.height - 30;
-        dx = 3;
-        dy = -3;
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height - 30;
+        ball.dx = 3;
+        ball.dy = -3;
         paddleX = (canvas.width - paddleWidth) / 2;
       }
     }
   }
-  // paddle moving logic
-  // can move paddle only within boundaries of canvas
-  if (rightPressed && paddleX < canvas.width - paddleWidth) {
-    paddleX += 7;
-  } else if (leftPressed && paddleX > 0) {
-    paddleX -= 7;
-  }
+  movePaddle();
   // add a small value to x and y after every frame has been drawn to make it appear
   // that the ball is moving
-  x += dx;
-  y += dy;
+//   x += dx;
+//   y += dy;
   requestAnimationFrame(draw);
 }
 
