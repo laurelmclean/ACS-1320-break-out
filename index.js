@@ -1,8 +1,8 @@
 import Ball from './Ball.js';
 import Brick from './Brick.js';
-import Bricks from './Bricks.js';
 import Paddle from './Paddle.js';
 import Text from './Text.js';
+import Background from './Background.js';
 
 // reference canvas element in js
 const canvas = document.getElementById('myCanvas');
@@ -11,13 +11,12 @@ const ctx = canvas.getContext('2d');
 
 const x = canvas.width / 2;
 const y = canvas.height - 30;
-let color = '#51a094';
+const color = '#51a094';
 
 // define ball radius to check if ball is touching wall
 const ballRadius = 10;
 
 // define paddle to hit the ball
-const paddleHeight = 10;
 const paddleWidth = 75;
 let paddleX = (canvas.width - paddleWidth) / 2;
 
@@ -50,6 +49,13 @@ const score = 0;
 
 // give player lives
 const lives = 3;
+
+// new objects
+const background = new Background(0, 0, canvas.width, canvas.height)
+const ball = new Ball(color, x, y);
+const paddle = new Paddle(paddleX, canvas.height - 10);
+const scoreText = new Text(8, 20, color, score, 'Score: ');
+const livesText = new Text(canvas.width - 65, 20, color, lives, 'Lives: ');
 
 // update the paddle position based on the pointer coordinates
 function mouseMoveHandler({ clientX }) {
@@ -99,7 +105,14 @@ function drawBricks() {
         const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
-        const brick = new Brick(brickX, brickY);
+        // Stretch challenge - rows are different colours
+        let brickRowColor = '#133337';
+        if (r === 1) {
+          brickRowColor = '#0e2f44';
+        } else if (r === 2) {
+          brickRowColor = '#2a6f64';
+        }
+        const brick = new Brick(brickX, brickY, brickRowColor);
         brick.render(ctx);
       }
     }
@@ -153,14 +166,10 @@ function collisionDetection() {
   }
 }
 
-const ball = new Ball(color, x, y);
-const paddle = new Paddle(paddleX, canvas.height - 10);
-const scoreText = new Text(8, 20, color, score, 'Score: ');
-const livesText = new Text(canvas.width - 65, 20, color, lives, 'Lives: ');
-
 function draw() {
   // removes previous shape after each frame
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  background.render(ctx);
   drawBricks();
   ball.render(ctx);
   ball.move();
