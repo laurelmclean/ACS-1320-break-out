@@ -5,11 +5,11 @@ class Paddle extends Sprite {
     super(x, y, width, height, color);
   }
 
-  move(dx) {
+  moveTo(dx) {
     this.x += dx;
   }
 
-  mouseMove(x) {
+  moveBy(x) {
     this.x = x;
   }
 

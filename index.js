@@ -63,7 +63,7 @@ function mouseMoveHandler({ clientX }) {
   // need to update so paddle wont disappear off left side
   const relativeX = clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddle.mouseMove(relativeX - paddleWidth / 2);
+    paddle.moveBy(relativeX - paddleWidth / 2);
   }
 }
 
@@ -123,9 +123,9 @@ function drawBricks() {
 function movePaddle() {
   // can move paddle only within boundaries of canvas
   if (rightPressed && paddle.x < canvas.width - paddleWidth) {
-    paddle.move(7);
+    paddle.moveTo(7);
   } else if (leftPressed && paddle.x > 0) {
-    paddle.move(-7);
+    paddle.moveTo(-7);
   }
 }
 
@@ -172,7 +172,7 @@ function draw() {
   background.render(ctx);
   drawBricks();
   ball.render(ctx);
-  ball.move();
+  ball.moveTo();
   paddle.render(ctx);
   scoreText.render(ctx);
   livesText.render(ctx);
