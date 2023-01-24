@@ -3,6 +3,7 @@ import Brick from './Brick.js';
 import Paddle from './Paddle.js';
 import Text from './Text.js';
 import Background from './Background.js';
+import Bricks from './Bricks.js';
 
 // reference canvas element in js
 const canvas = document.getElementById('myCanvas');
@@ -34,16 +35,6 @@ const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
 
-// array containing columns, rows, and x and y position
-// code will loop through and create new bricks
-const bricks = [];
-for (let c = 0; c < brickColumnCount; c += 1) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r += 1) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
-  }
-}
-
 // score variables
 const score = 0;
 
@@ -51,6 +42,7 @@ const score = 0;
 const lives = 3;
 
 // new objects
+const allBricks = new Bricks();
 const background = new Background(0, 0, canvas.width, canvas.height)
 const ball = new Ball(color, x, y);
 const paddle = new Paddle(paddleX, canvas.height - 10);
@@ -92,32 +84,6 @@ addEventListener('keydown', keyDownHandler, false);
 addEventListener('keyup', keyUpHandler, false);
 // event listener for mouse
 addEventListener('mousemove', mouseMoveHandler, false);
-
-// brick drawing logic
-function drawBricks() {
-  for (let c = 0; c < brickColumnCount; c += 1) {
-    for (let r = 0; r < brickRowCount; r += 1) {
-      if (bricks[c][r].status === 1) {
-        // calculations that will work out the x & y position of each brick for each loop iteration
-        // brickX position is worked out as brickWidth & brickPadding
-        // multiplied by the column number, c, plus the brickOffsetLeft
-        const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-        const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-        // Stretch challenge - rows are different colours
-        let brickRowColor = '#133337';
-        if (r === 1) {
-          brickRowColor = '#0e2f44';
-        } else if (r === 2) {
-          brickRowColor = '#2a6f64';
-        }
-        const brick = new Brick(brickX, brickY, brickRowColor);
-        brick.render(ctx);
-      }
-    }
-  }
-}
 
 // paddle moving logic
 function movePaddle() {
@@ -170,7 +136,7 @@ function draw() {
   // removes previous shape after each frame
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   background.render(ctx);
-  drawBricks();
+  allBricks.render(ctx);
   ball.render(ctx);
   ball.moveTo();
   paddle.render(ctx);
