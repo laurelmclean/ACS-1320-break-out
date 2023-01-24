@@ -5,6 +5,10 @@ class Bricks {
     this.rows = rows;
     this.cols = cols;
     this.bricks = [];
+    this.brickWidth = 75;
+    this.brickHeight = 20;
+    this.brickPadding = 10;
+    this.brickOffset = 30;
     // invoke method
     this.setup();
   }
@@ -24,8 +28,8 @@ class Bricks {
     for (let c = 0; c < this.cols; c += 1) {
       for (let r = 0; r < this.rows; r += 1) {
         if (this.bricks[c][r].status === 1) {
-          const brickX = (c * (75 + 10)) + 30;
-          const brickY = (r * (20 + 10)) + 30;
+          const brickX = (c * (this.brickWidth + this.brickPadding)) + this.brickOffset;
+          const brickY = (r * (this.brickHeight + this.brickPadding)) + this.brickOffset;
           this.bricks[c][r].x = brickX;
           this.bricks[c][r].y = brickY;
           // Stretch challenge - rows are different colours

@@ -1,5 +1,4 @@
 import Ball from './Ball.js';
-import Brick from './Brick.js';
 import Paddle from './Paddle.js';
 import Text from './Text.js';
 import Background from './Background.js';
@@ -29,11 +28,6 @@ let leftPressed = false;
 // brick variables
 const brickRowCount = 3;
 const brickColumnCount = 5;
-const brickWidth = 75;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
 
 // score variables
 const score = 0;
@@ -99,20 +93,19 @@ function movePaddle() {
 // loop through all the bricks and compare every single brick's position
 // with the ball's coordinates as each frame is drawn
 function collisionDetection() {
-  for (let c = 0; c < brickColumnCount; c += 1) {
-    for (let r = 0; r < brickRowCount; r += 1) {
-      const b = bricks[c][r];
-      const { x: brickX, y: brickY, status } = b;
+  for (let c = 0; c < allBricks.cols; c += 1) {
+    for (let r = 0; r < allBricks.rows; r += 1) {
       // if the brick is active (its status is 1) we will check whether the collision happens;
       // if a collision does occur we'll set the status of the given brick to 0
       // so it won't be painted on the screen
-      if (status === 1) {
+      const b = allBricks.bricks[c][r];
+      if (b.status === 1) {
         // if these conditions are met, reverse direction of ball
         if (
-          ball.x > brickX
-          && ball.x < brickX + brickWidth
-          && ball.y > brickY
-          && ball.y < brickY + brickHeight
+          ball.x > b.x
+          && ball.x < b.x + allBricks.brickWidth
+          && ball.y > b.y
+          && ball.y < b.y + allBricks.brickHeight
         ) {
           ball.dy = -ball.dy;
           b.status = 0;
