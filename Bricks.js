@@ -39,6 +39,7 @@ class Bricks {
           } else if (r === 2) {
             brickRowColor = '#2a6f64';
           }
+          // create new instances of brick
           const brick = new Brick(brickX, brickY, brickRowColor);
           brick.render(ctx);
         }

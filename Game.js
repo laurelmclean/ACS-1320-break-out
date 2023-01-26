@@ -5,49 +5,53 @@ import Background from './Background.js';
 import Bricks from './Bricks.js';
 
 class Game {
-  constructor() {
+  constructor(canvas, ctx) {
+    this.canvas = canvas;
+    this.ctx = ctx;
     this.color = '#51a094';
-    this.x = canvas.width / 2;
-    this.y = canvas.height - 30;
+    this.x = this.canvas.width / 2;
+    this.y = this.canvas.height - 30;
     this.paddleWidth = 75;
-    this.paddleX = (canvas.width - this.paddleWidth) / 2;
+    this.paddleX = (this.canvas.width - this.paddleWidth) / 2;
 
     // new instances of objects
     this.allBricks = new Bricks();
-    this.background = new Background(0, 0, canvas.width, canvas.height);
+    this.background = new Background(0, 0, this.canvas.width, this.canvas.height);
     this.ball = new Ball(this.color, this.x, this.y);
-    this.paddle = new Paddle(this.paddleX, canvas.height - 10);
+    this.paddle = new Paddle(this.paddleX, this.canvas.height - 10);
     this.scoreText = new Text(8, 20, this.color, 0, 'Score: ');
-    this.livesText = new Text(canvas.width - 65, 20, this.color, 3, 'Lives: ');
+    this.livesText = new Text(this.canvas.width - 65, 20, this.color, 3, 'Lives: ');
 
     // define variables for pressed buttons with boolean values
     // default value for both is false because at the beginning the control buttons are not pressed
     this.rightPressed = false;
     this.leftPressed = false;
 
+    // invoke setUp method
     this.setUp();
-
+    // invoke draw method
     this.draw();
   }
 
   setUp() {
     this.resetBallAndPaddle();
 
-    // FIX ME
     const { addEventListener } = document;
     // event listeners to listen for pressed keys
-    addEventListener('keydown', this.keyDownHandler, false);
-    addEventListener('keyup', this.keyUpHandler, false);
+    addEventListener('keydown', this.keyDownHandler.bind(this), false);
+    addEventListener('keyup', this.keyUpHandler.bind(this), false);
     // event listener for mouse
-    addEventListener('mousemove', this.mouseMoveHandler, false);
+    addEventListener('mousemove', this.mouseMoveHandler.bind(this), false);
   }
 
+  // reset ball and paddle
   resetBallAndPaddle() {
-    this.ball.x = canvas.width / 2;
-    this.ball.y = canvas.height - 30;
+    // randomize starting x position of ball to change the game play
+    this.ball.x = Math.floor(Math.random() * this.canvas.width) + 0;
+    this.ball.y = this.canvas.height - 30;
     this.ball.dx = 3;
     this.ball.dy = -3;
-    this.paddle.x = (canvas.width - this.paddle.width) / 2;
+    this.paddle.x = (this.canvas.width - this.paddle.width) / 2;
   }
 
   // collision detecting between ball and bricks
@@ -89,7 +93,7 @@ class Game {
   // paddle moving logic
   movePaddle() {
   // can move paddle only within boundaries of canvas
-    if (this.rightPressed && this.paddle.x < canvas.width - this.paddle.width) {
+    if (this.rightPressed && this.paddle.x < this.canvas.width - this.paddle.width) {
       this.paddle.moveTo(7);
     } else if (this.leftPressed && this.paddle.x > 0) {
       this.paddle.moveTo(-7);
@@ -118,26 +122,26 @@ class Game {
   // update the paddle position based on the pointer coordinates
   mouseMoveHandler({ clientX }) {
   // restricting the movement to the size of the Canvas
-  // need to update so paddle wont disappear off left side
-    const relativeX = clientX - canvas.offsetLeft;
-    if (relativeX > 0 && relativeX < canvas.width) {
+    const relativeX = clientX - this.canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < this.canvas.width) {
       this.paddle.moveBy(relativeX - this.paddle.width / 2);
     }
   }
 
   draw() {
   // removes previous shape after each frame
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.background.render(ctx);
-    this.allBricks.render(ctx);
-    this.ball.render(ctx);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // render all objects on screen
+    this.background.render(this.ctx);
+    this.allBricks.render(this.ctx);
+    this.ball.render(this.ctx);
     this.ball.moveTo();
-    this.paddle.render(ctx);
-    this.scoreText.render(ctx);
-    this.livesText.render(ctx);
+    this.paddle.render(this.ctx);
+    this.scoreText.render(this.ctx);
+    this.livesText.render(this.ctx);
     this.collisionDetection();
     // touching left or right
-    if (this.ball.x + this.ball.dx > canvas.width - this.ball.radius
+    if (this.ball.x + this.ball.dx > this.canvas.width - this.ball.radius
       || this.ball.x + this.ball.dx < this.ball.radius) {
       this.ball.dx = -this.ball.dx;
       // random colour if ball touches left or right
@@ -153,7 +157,7 @@ class Game {
       this.ball.dy = -this.ball.dy;
       // update colour when collision with wall
       this.ball.randColor();
-    } else if (this.ball.y + this.ball.dy > canvas.height - this.ball.radius) {
+    } else if (this.ball.y + this.ball.dy > this.canvas.height - this.ball.radius) {
     // detect collision between ball and paddle
       if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
         this.ball.dy = -this.ball.dy;
@@ -169,17 +173,13 @@ class Game {
         } else {
         // if there are still some lives left then the position of the ball and the paddle are reset
         // along with the movement of the ball.
-          this.ball.x = this.canvas.width / 2;
-          this.ball.y = canvas.height - 30;
-          this.ball.dx = 3;
-          this.ball.dy = -3;
-          this.paddle.x = (canvas.width - this.paddle.width) / 2;
+          this.resetBallAndPaddle();
         }
       }
     }
     this.movePaddle();
-    // fix this
-    requestAnimationFrame(this.draw);
+    // draw the screen again
+    requestAnimationFrame(this.draw.bind(this));
   }
 }
 
