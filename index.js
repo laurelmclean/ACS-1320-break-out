@@ -18,7 +18,7 @@ const ballRadius = 10;
 
 // define paddle to hit the ball
 const paddleWidth = 75;
-let paddleX = (canvas.width - paddleWidth) / 2;
+const paddleX = (canvas.width - paddleWidth) / 2;
 
 // define variables for pressed buttons with boolean values
 // default value for both is false because at the beginning the control buttons are not pressed
@@ -37,7 +37,7 @@ const lives = 3;
 
 // new objects
 const allBricks = new Bricks();
-const background = new Background(0, 0, canvas.width, canvas.height)
+const background = new Background(0, 0, canvas.width, canvas.height);
 const ball = new Ball(color, x, y);
 const paddle = new Paddle(paddleX, canvas.height - 10);
 const scoreText = new Text(8, 20, color, score, 'Score: ');
@@ -172,7 +172,7 @@ function draw() {
         ball.y = canvas.height - 30;
         ball.dx = 3;
         ball.dy = -3;
-        paddleX = (canvas.width - paddleWidth) / 2;
+        paddle.x = (canvas.width - paddle.width) / 2;
       }
     }
   }

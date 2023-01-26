@@ -12,14 +12,6 @@ class Paddle extends Sprite {
   moveBy(x) {
     this.x = x;
   }
-
-  render(ctx) {
-    ctx.beginPath();
-    ctx.rect(this.x, this.y, this.width, this.height);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-    ctx.closePath();
-  }
 }
 
 export default Paddle;
