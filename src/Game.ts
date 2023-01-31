@@ -119,7 +119,7 @@ class Game {
 
   // when pressed
   // browsers use arrowright or right
-  keyDownHandler({ key }: {key:any}): void {
+  keyDownHandler({ key }: {key:string}): void {
     if (key === 'Right' || key === 'ArrowRight') {
       this.rightPressed = true;
     } else if (key === 'Left' || key === 'ArrowLeft') {
@@ -128,7 +128,7 @@ class Game {
   }
 
   // when stopped being pressed
-  keyUpHandler({ key }: {key:any}): void {
+  keyUpHandler({ key }: {key:string}): void {
     if (key === 'Right' || key === 'ArrowRight') {
       this.rightPressed = false;
     } else if (key === 'Left' || key === 'ArrowLeft') {
@@ -137,7 +137,7 @@ class Game {
   }
 
   // update the paddle position based on the pointer coordinates
-  mouseMoveHandler({ clientX }: {clientX:any}): void {
+  mouseMoveHandler({ clientX }: {clientX:number}): void {
   // restricting the movement to the size of the Canvas
     const relativeX = clientX - this.canvas.offsetLeft;
     if (relativeX > 0 && relativeX < this.canvas.width) {
