@@ -1,7 +1,15 @@
-import Sprite from './Sprite.js';
+import Sprite from './Sprite';
 
 class Ball extends Sprite {
-  constructor(color, x = 0, y = 0, radius = 10) {
+  // class properties
+  color: string;
+  radius: number;
+  dx: number;
+  dy: number;
+  x: number;
+  y:number;
+
+  constructor(color: string, x: number = 0, y: number = 0, radius: number = 10) {
     super(x, y, 0, 0, color);
     this.color = color;
     this.radius = radius;
@@ -21,7 +29,7 @@ class Ball extends Sprite {
   }
 
   // overrides existing render method to draw a circle
-  render(ctx) {
+  render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = this.color;

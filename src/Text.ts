@@ -1,5 +1,12 @@
 class Text {
-  constructor(x, y, color, value, displayText) {
+  x: number;
+  y: number;
+  color: string;
+  value: number;
+  font: string;
+  displayText: string;
+
+  constructor(x: number, y: number, color: string, value: number, displayText: string) {
     this.x = x;
     this.y = y;
     this.color = color;
@@ -8,7 +15,7 @@ class Text {
     this.displayText = displayText;
   }
 
-  render(ctx) {
+  render(ctx: CanvasRenderingContext2D): void {
     ctx.font = this.font;
     ctx.fillStyle = this.color;
     // first param is text, and then coordinates

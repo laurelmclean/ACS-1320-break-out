@@ -1,11 +1,28 @@
-import Ball from './Ball.js';
-import Paddle from './Paddle.js';
-import Text from './Text.js';
-import Background from './Background.js';
-import Bricks from './Bricks.js';
+import Ball from './Ball';
+import Paddle from './Paddle';
+import Text from './Text';
+import Background from './Background';
+import Bricks from './Bricks';
 
 class Game {
-  constructor(canvas, ctx) {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  color: string;
+  x: number;
+  y: number;
+  paddleWidth: number;
+  paddleX: number;
+  allBricks: Bricks;
+  background: Background;
+  ball: Ball;
+  paddle: Paddle;
+  scoreText: Text;
+  livesText: Text;
+  rightPressed: boolean;
+  leftPressed: boolean;
+
+
+  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.color = '#51a094';
@@ -33,7 +50,7 @@ class Game {
     this.draw();
   }
 
-  setUp() {
+  setUp(): void {
     this.resetBallAndPaddle();
 
     const { addEventListener } = document;
@@ -45,7 +62,7 @@ class Game {
   }
 
   // reset ball and paddle
-  resetBallAndPaddle() {
+  resetBallAndPaddle(): void {
     // randomize starting x position of ball to change the game play
     this.ball.x = Math.floor(Math.random() * this.canvas.width) + 0;
     this.ball.y = this.canvas.height - 30;
@@ -57,7 +74,7 @@ class Game {
   // collision detecting between ball and bricks
   // loop through all the bricks and compare every single brick's position
   // with the ball's coordinates as each frame is drawn
-  collisionDetection() {
+  collisionDetection(): void {
     for (let c = 0; c < this.allBricks.cols; c += 1) {
       for (let r = 0; r < this.allBricks.rows; r += 1) {
       // if the brick is active (its status is 1) we will check whether the collision happens;
@@ -91,7 +108,7 @@ class Game {
   }
 
   // paddle moving logic
-  movePaddle() {
+  movePaddle(): void {
   // can move paddle only within boundaries of canvas
     if (this.rightPressed && this.paddle.x < this.canvas.width - this.paddle.width) {
       this.paddle.moveTo(7);
@@ -102,7 +119,7 @@ class Game {
 
   // when pressed
   // browsers use arrowright or right
-  keyDownHandler({ key }) {
+  keyDownHandler({ key }: {key:any}): void {
     if (key === 'Right' || key === 'ArrowRight') {
       this.rightPressed = true;
     } else if (key === 'Left' || key === 'ArrowLeft') {
@@ -111,7 +128,7 @@ class Game {
   }
 
   // when stopped being pressed
-  keyUpHandler({ key }) {
+  keyUpHandler({ key }: {key:any}): void {
     if (key === 'Right' || key === 'ArrowRight') {
       this.rightPressed = false;
     } else if (key === 'Left' || key === 'ArrowLeft') {
@@ -120,7 +137,7 @@ class Game {
   }
 
   // update the paddle position based on the pointer coordinates
-  mouseMoveHandler({ clientX }) {
+  mouseMoveHandler({ clientX }: {clientX:any}): void {
   // restricting the movement to the size of the Canvas
     const relativeX = clientX - this.canvas.offsetLeft;
     if (relativeX > 0 && relativeX < this.canvas.width) {
@@ -128,7 +145,7 @@ class Game {
     }
   }
 
-  draw() {
+  draw(): void {
   // removes previous shape after each frame
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // render all objects on screen
